@@ -237,8 +237,6 @@ def fitness(lstm_num_steps, size, lstm_init_epoch, lstm_max_epoch,
 
     vali_pred_vals = np.array(vali_pred_vals)
 
-    vali_pred_vals = (np.round(vali_pred_vals, 0)).astype(np.int32)
-
     vali_pred_vals = vali_pred_vals.flatten()
 
     vali_pred_vals = vali_pred_vals.tolist()
