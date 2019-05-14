@@ -76,6 +76,9 @@ def endlog():
 
 #--------------------------------------------------------------------
 
+
+#------------ generate data batches ---------------------------------
+
 def generate_batches(train_X, train_y, batch_size):
     num_batches = int(len(train_X)) // batch_size
     if batch_size * num_batches < len(train_X):
@@ -86,7 +89,9 @@ def generate_batches(train_X, train_y, batch_size):
         batch_X = train_X[j * batch_size: (j + 1) * batch_size]
         batch_y = train_y[j * batch_size: (j + 1) * batch_size]
         yield batch_X, batch_y
+#-----------------------------------------------------------------------
 
+#------------ data window segmentation for time series data (part of the pre-processing)---------------------------------
 
 def segmentation(data):
 
@@ -109,7 +114,10 @@ def segmentation(data):
     y = np.asarray(y)
 
     return X, y
+  
+  #-------------------------------------------------------------------------------------------------------------
 
+  #------------ scaling and rescaling data ---------------------------------
 def scale(data):
     for i in range(len(column_min_max)):
         data[columns[i]] = (data[columns[i]] - column_min_max[i][0]) / ((column_min_max[i][1]) - (column_min_max[i][0]))
@@ -120,8 +128,10 @@ def scale(data):
 def rescle(test_pred):
     prediction = [(pred * (column_min_max[0][1] - column_min_max[0][0])) + column_min_max[0][0] for pred in test_pred]
     return prediction
+  
+#-------------------------------------------------------------------------
 
-
+#------------ fucntion that governs data pre-processing ---------------------------------
 
 def pre_process():
 
@@ -153,8 +163,9 @@ def pre_process():
 
 
     return train_X, train_y, val_X, val_y, nonescaled_val_y
+  #---------------------------------------------------------------------------------------
 
-
+#------------ RNN model ---------------------------------
 def setupRNN(inputs,model_dropout_rate):
 
 
@@ -174,7 +185,9 @@ def setupRNN(inputs,model_dropout_rate):
     prediction = tf.matmul(dropout, weight) + bias
 
     return prediction
+#-------------------------------------------------------
 
+#------------ function returned to Bayesian Optimization ---------------------------------
 
 @use_named_args(dimensions=dimensions)
 def fitness(lstm_num_steps, size, lstm_init_epoch, lstm_max_epoch,
@@ -248,7 +261,7 @@ def fitness(lstm_num_steps, size, lstm_init_epoch, lstm_max_epoch,
     val_error = sqrt(mean_squared_error(vali_nonescaled_y, vali_pred_vals))
 
     return val_error
-
+#--------------------------------------------------------------------------
 
 if __name__ == '__main__':
 
